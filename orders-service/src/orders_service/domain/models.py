@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from enum import Enum
 
-from orders_service.domain.exceptions import EmptyOrderError
+from orders_service.domain.exceptions import EmptyOrderError, InvalidOrderStateError
 
 
 class OrderStatus(str, Enum):
@@ -37,3 +37,15 @@ class Order:
     @property
     def total_amount(self) -> Decimal:
         return sum((item.subtotal for item in self.items), Decimal("0.00"))
+
+    def pay(self) -> None:
+        if self.status != OrderStatus.PENDING:
+            raise InvalidOrderStateError(
+                f"Cannot pay an order with status {self.status.value}"
+            )
+        self.status = OrderStatus.PAID
+
+    def cancel(self) -> None:
+        if self.status == OrderStatus.PAID:
+            raise InvalidOrderStateError("Cannot cancel an already paid order")
+        self.status = OrderStatus.CANCELLED

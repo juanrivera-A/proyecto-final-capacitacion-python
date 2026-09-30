@@ -10,6 +10,11 @@ jobs:
   quality-and-tests:
     runs-on: ubuntu-latest
 
+    # Indicar a GitHub Actions que trabaje dentro de orders-service
+    defaults:
+      run:
+        working-directory: ./orders-service
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -27,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction
 
-      - name: Run Ruff (Linter)
+      - name: Run Ruff (Linter & Format Check)
         run: poetry run ruff check .
 
       - name: Run Mypy (Type Checking)

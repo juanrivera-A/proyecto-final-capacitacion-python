@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from orders_service.application.dtos import CreateOrderInputDTO, OrderItemDTO
 from orders_service.application.use_cases import OrderUseCases
 from orders_service.domain.exceptions import DomainError

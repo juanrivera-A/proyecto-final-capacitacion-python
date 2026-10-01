@@ -1,0 +1,18 @@
+services:
+  orders-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orders_service_app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////app/orders.db
+      - LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped

@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-
 from orders_service.application.dtos import CreateOrderInputDTO, OrderItemDTO
 from orders_service.application.use_cases import OrderUseCases
 from orders_service.domain.exceptions import DomainError
@@ -29,10 +28,19 @@ def create_order(
                 for item in payload.items
             ],
         )
-        return use_cases.create_order(input_dto)  # type: ignore[return-value]
+        result = use_cases.create_order(input_dto)
+
+        return OrderResponse.model_validate(result)
+
     except DomainError as err:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)
+        ) from err
+    except Exception as err:
+        # Esto te mostrará en la respuesta JSON cualquier otro error de serialización
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Unhandled error: {type(err).__name__} - {err!s}",
         ) from err
 
 

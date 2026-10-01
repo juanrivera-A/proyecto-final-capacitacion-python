@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class OrderItemRequest(BaseModel):
@@ -17,12 +17,16 @@ class CreateOrderRequest(BaseModel):
 
 
 class OrderItemResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     product_id: str
     quantity: int
     price: Decimal
 
 
 class OrderResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     customer_id: str
     status: str
